@@ -8,35 +8,50 @@
 
 import UIKit
 import FacebookLogin
-import FacebookCore
 import FBSDKLoginKit
+import FacebookCore
 
-class ViewController: UIViewController {
-
-    @IBOutlet weak var lblStatus: UILabel!
+class ViewController: UIViewController, FBSDKLoginButtonDelegate {
+    
+    @IBOutlet var lblStatus: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        //var loginButton = LoginButton(readPermissions: [ .publicProfile ])
-        var loginButton = LoginButton(readPermissions: [ .publicProfile, .email, .userFriends ])
-        loginButton.center = view.center
+        let loginButton = LoginButton(readPermissions: [ .publicProfile, .email, .userFriends ])
+        loginButton.delegate = self as? LoginButtonDelegate
+        loginButton.center = self.view.center
         
-        view.addSubview(loginButton)
-        
-        if let accessToken = AccessToken.current {
-            // User is logged in, use 'accessToken' here.
-            
-            print("User sudah masuk dengan token \(accessToken)")
-            
-        }
+        self.view.addSubview(loginButton)
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+        if error != nil{
+            lblStatus.text = error.localizedDescription
+            print(error.localizedDescription)
+        }
+        else if result.isCancelled{
+            lblStatus.text = "User canceled log in"
+            print("User canceled log in")
+        }
+        else {
+            // successfully login
+            lblStatus.text = "User logged in"
+            print("User logged in")
+        }
+    }
+    
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+        lblStatus.text = "User logged out"
+        print("User logged out")
+    }
+
 }
 
