@@ -24,7 +24,6 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
         loginButton.center = self.view.center
         
         self.view.addSubview(loginButton)
-        
     }
     
     override func didReceiveMemoryWarning() {
